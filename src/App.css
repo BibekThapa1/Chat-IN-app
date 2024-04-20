@@ -1,0 +1,10 @@
+.home{
+    height:  calc(((100vh - 2rem)));
+}
+.chat-area{
+    height:calc(100vh - 11em)
+}
+.friend-list{
+    height:calc((100vh - 17em));
+
+}
