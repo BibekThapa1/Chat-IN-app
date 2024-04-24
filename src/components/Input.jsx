@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Button from "./Button";
+// import Button from "./Button";
 
 const Input = React.forwardRef(function Input(
   { type = "text", placeholder = "Enter data", className = "", 
@@ -22,11 +22,11 @@ const Input = React.forwardRef(function Input(
       type={passview?"text":type}
       placeholder={placeholder}
       {...props}
-      onKeyUp={()=>setPass(true)}
+      // onKeyUp={()=>setPass(true)}
     />
 
-    {type==="password" && pass && <Button classname="absolute right-0 text-sm bg-slate-700 top-2 w-fit" onClick={showPass}>{passview?"hide":"show"}</Button>}
-
+    {type==="password" && <button className="absolute text-white right-0 text-sm bg-slate-700 top-2 w-fit" onClick={showPass}>{passview?"hide":"show"}</button>}
+ 
     </div>
   );
 });

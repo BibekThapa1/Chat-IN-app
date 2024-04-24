@@ -1,15 +1,23 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Input, Button } from "../components/index";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import Login from "./Login";
+import authService from "../supabase/auth";
 
 const SignUp = () => {
   const { register, handleSubmit } = useForm();
 
-  const create = (data) => {
+const navigate = useNavigate()
+
+  const create = async (data) => {
     console.log("clicked");
     console.log(data);
+    
+    const response = await authService.signUp(data);
+    console.log(response)
+    if(response) navigate("/")
+
   };
 
   return (

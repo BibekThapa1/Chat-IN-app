@@ -18,8 +18,8 @@ const [option, setOption] = useState(false)
             <p className='text-center'>Bibek</p>
             </div>
             <div className='relative'>
-            <button className="bg-red-700 h-fit p-1 self-center	rounded-xl w-16 text-center text-white" onClick={optionsToggle}>{option?"Option":"Close"}</button>
-            <ol className={`${option?"hidden":"block"} absolute bg-slate-400 -bottom-16 py-2 px-2 rounded-md flex flex-col gap-2`}>
+            <button className="bg-red-700 h-fit p-1 self-center	rounded-xl w-16 text-center text-white" onClick={optionsToggle}>{option?"Close":" Option"}</button>
+            <ol className={`${option?"block":"hidden"} absolute bg-slate-400 -bottom-16 py-2 px-2 rounded-md flex flex-col gap-2`}>
               <li><button className='p-1 bg-slate-300 px-3 rounded w-full hover:bg-slate-200'>logout</button></li>
               <li><button className='p-1 bg-slate-300 px-3 rounded hover:bg-slate-200'>settings</button></li>
             </ol>

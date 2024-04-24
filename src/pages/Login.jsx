@@ -52,7 +52,7 @@ const Login = () => {
             {" "}
             Don't have an account,{" "}
             <span className="text-blue-950 underline p-2 cursor-pointer rounded-xl">
-              <Link to={"./SignUp.jsx"}>Sign Up</Link>
+              <Link to={"/signup/"}>Sign Up</Link>
             </span>
           </p>
         </div>
