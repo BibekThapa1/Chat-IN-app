@@ -1,13 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Input, Button } from "../components/index";
-import { Link } from "react-router-dom";
+import { login as authLogin } from "../store/authSlice";
+import { Link, useNavigate } from "react-router-dom";
+import authService from "../supabase/auth";
+import { useSelector, useDispatch } from "react-redux";
 
 const Login = () => {
   const { register, handleSubmit } = useForm();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [error, setError] = useState(false);
 
-  const login = (data) => {
-    console.log(data);
+  const login = async (data) => {
+    const response = await authService.login(data);
+    console.log(response.user);
+    if (response.user) {
+      dispatch(authLogin(response.user.id));
+      navigate("/");
+    } else {
+      setError(true);
+    }
   };
 
   return (
@@ -39,22 +52,26 @@ const Login = () => {
               className="w-5/12 self-center outline-none"
               placeholder="Enter Password"
               type="password"
-              {...register("password",{
-                required:true,
+              {...register("password", {
+                required: true,
               })}
             />
-            <Button
-              type="submit"
-              classname="w-fit self-center text-blue-50"
-            >Login</Button>
+            <Button type="submit" classname="w-fit self-center text-blue-50">
+              Login
+            </Button>
           </form>
           <p className="text-xl self-center mt-4">
             {" "}
             Don't have an account,{" "}
             <span className="text-blue-950 underline p-2 cursor-pointer rounded-xl">
-              <Link to={"/signup/"}>Sign Up</Link>
+              <Link to={"/signup"}>Sign Up</Link>
             </span>
           </p>
+          {error && (
+            <p className="text-red-500 text-lg p-3 w-full text-center ">
+              Please enter valid details
+            </p>
+          )}
         </div>
       </div>
     </>

@@ -5,25 +5,27 @@ import { useNavigate } from "react-router-dom";
 const Authentication = ({ authentication = true, children }) => {
   const [loading, setLoading] = useState(true);
   const authStatus = useSelector((state) => state.auth.user);
+  const userData = useSelector((state) => state.auth.data);
   const navigate = useNavigate();
 
-  console.log("Entered ",authentication,authStatus)
- 
-  useEffect(()=>{
-    // if (authentication && authStatus != authentication) {
-      if(authStatus == false){
-      console.log("Entered")
-    navigate("/login");
-    setLoading(false)
-  }
-   else if ( authStatus === true) {
-    navigate("/");
-    setLoading(false);
-  }
-  },[authStatus,authentication,navigate])
-  
+console.log(authentication ,authStatus,userData)
 
-  return loading ? <h1 className="text-2xl text-center"> Loading...</h1> : <>{children}</>;
+  useEffect(() => {
+    if (authentication && authStatus != authentication && !userData) {
+      navigate("/login");
+    }
+    if (!authentication && authStatus != authentication && userData) {
+
+      navigate("/");
+    }
+    setLoading(false);
+  }, [authStatus, authentication, navigate, userData]);
+
+  return loading ? (
+    <h1 className="text-2xl text-center"> Loading...</h1>
+  ) : (
+    <>{children}</>
+  );
 };
 
 export default Authentication;

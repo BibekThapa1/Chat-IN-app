@@ -1,7 +1,6 @@
 import React from 'react'
 
 const SingleFriend = ({friend}) => {
-    console.log(friend)
   return (
     <div className='p-1 flex align-middle justify-between h-fit gap-1 bg-blue-200 border-slate-100 border-2 rounded-xl cursor-pointer hover:bg-blue-300 duration-200	 hover:ease-in' >
       <div className="flex flex-col justify-center align-middle">

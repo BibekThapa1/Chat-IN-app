@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  userId: null,
   user: false,
-  userData: null,
+  data: null,
 };
 
 export const authSlice = createSlice({
@@ -11,9 +12,15 @@ export const authSlice = createSlice({
   reducers: {
     login: (state, action) => {
       state.user = true;
-      state.userData = action.payload;
+      state.userId = action.payload;
     },
-    logout: (state, action) => {
+    userData: (state, action) => {
+      state.data = action.payload;
+      console.log("state.data = ",state.data)
+    },
+    logout: (state) => {
+      state.userId= null,
+
       state.user = false;
       state.userData = null;
     },
@@ -21,6 +28,6 @@ export const authSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { login , logout } = authSlice.actions;
+export const { login, logout ,userData } = authSlice.actions;
 
 export default authSlice.reducer;

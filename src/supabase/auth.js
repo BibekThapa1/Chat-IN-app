@@ -2,8 +2,6 @@ import conf from "../conf/config";
 import { createClient } from "@supabase/supabase-js";
 import { Auth } from "@supabase/auth-ui-react";
 
-console.log(conf.supabaseUrl);
-
 export class AuthService {
   supabase;
 
@@ -18,8 +16,14 @@ export class AuthService {
         password,
       });
       if (response.data.user) {
-        console.log(response.data.user);
-        return this.addUserInList(response.data.user, userName);
+        console.log(response);
+        const data = await this.addUserInList(response.data.user, userName);
+        if (data) {
+          return response.data.user;
+        } else {
+          return false;
+          console.log("error");
+        }
       }
     } catch (error) {
       console.log(error);
@@ -33,7 +37,10 @@ export class AuthService {
 
     if (error) console.log("Error:", error);
     else {
-      console.log("Data inserted:", data);
+     await this.supabase
+      .from("friends")
+      .insert([{ id  }]);
+
       return true;
     }
   }
@@ -49,6 +56,27 @@ export class AuthService {
       return false;
     }
   }
+
+  async login({ email, password }) {
+    try {
+      const { data, error } = await this.supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (data) {
+        return data;
+      }
+      if (error) throw new Error();
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
+  async logout(){
+     await this.supabase.auth.signOut()
+  }
+
 }
 
 const authService = new AuthService();

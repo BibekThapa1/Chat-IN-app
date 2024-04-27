@@ -8,3 +8,7 @@
     height:calc((100vh - 17em));
 
 }
+
+.searched-user{
+    bottom:-34px;
+}

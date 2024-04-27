@@ -1,23 +1,25 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Input, Button } from "../components/index";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Login from "./Login";
+import { login as authLogin } from "../store/authSlice";
 import authService from "../supabase/auth";
+import { useDispatch } from "react-redux";
 
 const SignUp = () => {
   const { register, handleSubmit } = useForm();
 
-const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const create = async (data) => {
-    console.log("clicked");
-    console.log(data);
-    
     const response = await authService.signUp(data);
-    console.log(response)
-    if(response) navigate("/")
-
+    console.log(response.id)
+    if (response) {
+      dispatch(authLogin(response.id))
+      navigate("/");
+    };
   };
 
   return (
@@ -65,7 +67,7 @@ const navigate = useNavigate()
             {" "}
             Already have an account,{" "}
             <span className="text-blue-950 underline p-2 cursor-pointer rounded-xl">
-             <Link to={"./Login.jsx"}>Login</Link>
+              <Link to={"/login"}>Login</Link>
             </span>
           </p>
         </div>

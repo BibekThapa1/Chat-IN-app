@@ -1,6 +1,4 @@
 const url = import.meta.env.VITE_SUPABASE_URL   
-console.log(url)
-
 
 const conf = {
 
