@@ -19,7 +19,9 @@ export class AuthService {
         console.log(response);
         const data = await this.addUserInList(response.data.user, userName);
         if (data) {
-          return response.data.user;
+          console.log(data)
+          console.log(response.data.user.id)
+          return response.data.user.id;
         } else {
           return false;
           console.log("error");
@@ -31,17 +33,19 @@ export class AuthService {
   }
 
   async addUserInList({ id, ...props }, userName) {
-    const { data, error } = await this.supabase
+    const response = await this.supabase
       .from("users")
       .insert([{ imageUrl: "", userName, otherData: { ...props }, id }]);
-
-    if (error) console.log("Error:", error);
-    else {
-     await this.supabase
-      .from("friends")
-      .insert([{ id  }]);
-
+     console.log(response)
+    if (response) {
+      console.log("entered the loop")
+     const data =  await this.supabase.from("friends").insert([{ id }]);
+     console.log(data)
+     await this.supabase.from("messages").insert([{id}])
       return true;
+    }
+    else {
+      return false;
     }
   }
 
@@ -73,10 +77,9 @@ export class AuthService {
     }
   }
 
-  async logout(){
-     await this.supabase.auth.signOut()
+  async logout() {
+    await this.supabase.auth.signOut();
   }
-
 }
 
 const authService = new AuthService();

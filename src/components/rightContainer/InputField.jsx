@@ -1,17 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
+import dbService from "../../supabase/database";
+import { useSelector } from "react-redux";
 
 const InputField = () => {
+
+  const [image, setImage] = useState(null);
+  const userId = useSelector((state)=> state.auth.userId)
+
+  async function sendData(e){
+   e.preventDefault();
+   if(image){
+   await dbService.uploadImages(userId,image,"sentImages")
+   .then((data)=>{
+    console.log(data)
+   })
+   }
+  }
+
+
   return (
-    <form className="w-ful flex justify-between p-2   bg-green-100 gap-7 h-14 pr-4">
+    <form className="w-ful flex justify-between p-2   bg-green-100 gap-7 h-14 pr-4" onSubmit={sendData}>
       <div className="flex flex-none gap-2 w-2/12 ">
         <div>
-          <label
+          {/* <label
             htmlFor="add"
             className="text-2xl font-bold bg-slate-400 p-1 rounded-md text-center self-center cursor-pointer m-auto"
           >
             +
           </label>
-          <input id="add" type="file" className="hidden"></input>
+          <input id="add" type="file" className="hidden" ></input> */}
         </div>
         <div>
         <label
@@ -22,7 +39,9 @@ const InputField = () => {
             className="object-cover h-full"
             alt="" />
           </label>
-          <input type="file" id="image" name="avatar" accept="image/png, image/jpeg"  className="hidden"/>
+          <input type="file" id="image" name="avatar" accept="image/png, image/jpeg"  className="hidden" 
+          onChange={(e) => setImage(e.target.files[0])}
+          />
         </div>
       </div>
       <input

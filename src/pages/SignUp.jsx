@@ -15,9 +15,9 @@ const SignUp = () => {
 
   const create = async (data) => {
     const response = await authService.signUp(data);
-    console.log(response.id)
+    console.log(response)
     if (response) {
-      dispatch(authLogin(response.id))
+      dispatch(authLogin(response))
       navigate("/");
     };
   };

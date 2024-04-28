@@ -12,3 +12,9 @@
 .searched-user{
     bottom:-34px;
 }
+
+
+/* All friends component */
+.friend-li{
+min-width: 50vw;
+}

@@ -35,42 +35,6 @@ const Upper = ({ classname, ...props }) => {
   }
 
 
-  // const dispatch = useDispatch();
-  const userStatus = useSelector((state) => state.auth.user);
-  const userId = useSelector((state) => state.auth.userId);
-  const userDatas = useSelector((state) => state.auth.data);
-  // const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   async function getUser() {
-  //     authService.getUser().then((data) => {
-  //       if (data) {
-  //         console.log(data)
-  //         dispatch(authLogin(data.id));
-  //       } else {
-  //         console.log("error occured");
-  //       }
-  //     });
-  //   }
-  //   getUser();
-  // }, [dispatch,userStatus,navigate]);
-
-  // useEffect(() => {
-  //   async function getUserDataFromStore(id) {
-  //     await dbService.getUserData(id).then((data) => {
-  //       if (data) {
-  //         console.log(data)
-  //         dispatch(userData(data));
-  //       }
-
-  //     });
-  //   }
-  //   if (userId) {
-  //     getUserDataFromStore(userId);
-  //   }
-  // }, [userStatus,navigate]);
-
-
   return (
     !loading && (
       <div>

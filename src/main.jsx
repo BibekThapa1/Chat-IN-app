@@ -20,6 +20,23 @@ const router = createBrowserRouter([
             <Home />
           </Authentication>
         ),
+      },{
+
+        path:"/:slug",
+        element:(
+          <Authentication>
+            <Home />
+          </Authentication>
+        )
+      },
+      {
+
+        path:"/user/:slug",
+        element:(
+          <Authentication>
+            <Home />
+          </Authentication>
+        )
       },
       {
         path: "/login",
