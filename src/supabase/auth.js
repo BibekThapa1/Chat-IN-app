@@ -1,6 +1,5 @@
 import conf from "../conf/config";
 import { createClient } from "@supabase/supabase-js";
-import { Auth } from "@supabase/auth-ui-react";
 
 export class AuthService {
   supabase;
@@ -9,19 +8,26 @@ export class AuthService {
     this.supabase = createClient(conf.supabaseUrl, conf.supabaseKey);
   }
 
-  async signUp({ email, password, userName }) {
+  async signUp({ email, password, userName }, image, bucketName, uid) {
     try {
       const response = await this.supabase.auth.signUp({
         email,
         password,
       });
       if (response.data.user) {
-        console.log(response);
-        const data = await this.addUserInList(response.data.user, userName);
+        const id = response.data.user.id;
+        const imageResponse = await this.supabase.storage
+          .from(bucketName)
+          .upload(id + "/" + uid, image);
+        const imagePath = `https://ourvhgbvgfgyitosfspy.supabase.co/storage/v1/object/public/${imageResponse.data.fullPath}`;
+
+        const data = await this.addUserInList(
+          response.data.user,
+          userName,
+          imagePath
+        );
         if (data) {
-          console.log(data)
-          console.log(response.data.user.id)
-          return response.data.user.id;
+          return id;
         } else {
           return false;
           console.log("error");
@@ -32,19 +38,15 @@ export class AuthService {
     }
   }
 
-  async addUserInList({ id, ...props }, userName) {
+  async addUserInList({ id, ...props }, userName, imageUrl) {
     const response = await this.supabase
       .from("users")
-      .insert([{ imageUrl: "", userName, otherData: { ...props }, id }]);
-     console.log(response)
+      .insert([{ imageUrl, userName, otherData: { ...props }, id }]);
     if (response) {
-      console.log("entered the loop")
-     const data =  await this.supabase.from("friends").insert([{ id }]);
-     console.log(data)
-     await this.supabase.from("messages").insert([{id}])
+      const data = await this.supabase.from("friends").insert([{ id }]);
+      await this.supabase.from("messages").insert([{ id }]);
       return true;
-    }
-    else {
+    } else {
       return false;
     }
   }

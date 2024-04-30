@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { debounce } from "lodash";
+import { debounce, filter } from "lodash";
 import "../App.css";
 import dbService from "../supabase/database";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const Search = () => {
   const [userName, setUserName] = useState("");
@@ -17,25 +18,21 @@ const Search = () => {
   const fetchUsers = debounce(async (prefix) => {
     const data = await dbService.searchUsers(prefix);
     if (data) {
-      setUsers(data);
+      setUsers(filterItems(data));
     }
   }, 300);
-  console.log(ownData[0].otherData.identities[0].id);
+  // console.log(ownData[0].otherData.identities[0].id);
 
   async function addFriend(e) {
     const friendId = e.target.id;
-    console.log(e.target.id);
-    const data = [
-      {
-        userName: ownData[0].userName,
-        imageUrl: ownData[0].userName,
-        msg: "",
-        id: ownData[0].otherData.identities[0].id,
-      },
-    ];
-    await dbService.addFriend(ownId, friendId);
+    console.log(friendId)
+    setUserName("");
 
-    await dbService.addToRecent(ownId, friendId, data);
+    await dbService.addToRecent(ownId, friendId);
+
+  }
+  function filterItems(arr) {
+    return arr.filter((a) => a.id != ownId);
   }
 
   function search() {
@@ -55,11 +52,14 @@ const Search = () => {
         onKeyUp={search}
       />
       {users && userName.length >= 1 && (
-        <ul className="absolute bg-slate-200 p-1 h-fit max-h-96  flex-col gap-4  overflow-y-scroll  w-full">
+        <div className="absolute bg-slate-200 p-1 h-fit max-h-96  flex-col gap-4  overflow-y-scroll  w-full">
           {users.map((user) => (
-            <li
+            <Link
+              to={`user/${user.id}`}
               key={user.id}
               className="searched-user p-1 rounded-xl flex align-middle justify-between bg-white cursor-pointer mb-2 hover:bg-slate-300"
+              onClick={addFriend}
+              id={user.id}
             >
               <img
                 src={user.imageUrl || defaultImage}
@@ -70,13 +70,12 @@ const Search = () => {
               <button
                 className="border-2 p-2 rounded-xl hover:bg-slate-100"
                 id={user.id}
-                onClick={addFriend}
               >
                 +
               </button>
-            </li>
+            </Link>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

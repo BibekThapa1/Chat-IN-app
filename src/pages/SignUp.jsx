@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useId } from "react";
 import { useForm } from "react-hook-form";
 import { Input, Button } from "../components/index";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,20 +6,26 @@ import Login from "./Login";
 import { login as authLogin } from "../store/authSlice";
 import authService from "../supabase/auth";
 import { useDispatch } from "react-redux";
+import dbService from "../supabase/database";
+import { v4 as uuidv4 } from "uuid";
+
 
 const SignUp = () => {
   const { register, handleSubmit } = useForm();
 
+  const id = useId();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const create = async (data) => {
-    const response = await authService.signUp(data);
-    console.log(response)
-    if (response) {
-      dispatch(authLogin(response))
+    const image = data.image[0];
+  
+    const id = await authService.signUp(data,image,"profileImages",uuidv4());
+
+    if (id) {
+      dispatch(authLogin(id));
       navigate("/");
-    };
+    }
   };
 
   return (
@@ -59,6 +65,27 @@ const SignUp = () => {
                 required: true,
               })}
             />
+            <label
+              htmlFor={id}
+              className="flex bg-slate-400 h-14 px-2 w-fit rounded-md text-center cursor-pointer"
+            >
+              <img
+                src="https://cdn.icon-icons.com/icons2/2568/PNG/512/images_picture_icon_153719.png"
+                className="object-cover h-full"
+                alt=""
+              />{" "}
+              <p className="align-middle self-center text-xl">chose your profile picture</p>
+            </label>
+            <Input
+              id={id}
+              className="w-5/12 self-center outline-none hidden"
+              type="file"
+              {...register("image", {
+                required: true,
+              })}
+            />
+
+            <input id="add" type="file" className="hidden"></input>
             <Button type="submit" classname="w-fit self-center text-blue-50">
               Sign Up
             </Button>

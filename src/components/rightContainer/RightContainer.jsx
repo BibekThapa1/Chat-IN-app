@@ -2,14 +2,14 @@ import React from "react";
 import Upper from "./Upper";
 import Lower from "./Lower";
 import { useParams } from "react-router-dom";
-import AllFriends from "./AllFriends";
+import AllUsers from "./AllUsers";
 
 const RightContainer = () => {
   const {slug} = useParams();
   console.log(slug)
 
-  if (slug == "all-friends") {
-    return <AllFriends />;
+  if (slug == "all-users") {
+    return <AllUsers />;
   }
   else if(slug != undefined){
    return (

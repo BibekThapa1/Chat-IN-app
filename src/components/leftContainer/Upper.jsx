@@ -42,7 +42,7 @@ const Upper = ({ classname, ...props }) => {
           <div className="flex flex-col justify-center  align-middle">
             <img
               src={userData[0].imageUrl || defaultImage}
-              className="rounded-full h-10 object-fill"
+              className="rounded-full h-10 object-contain"
               alt=""
             />
             <p className="text-center">{userData[0].userName || ""}</p>

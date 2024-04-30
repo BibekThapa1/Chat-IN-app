@@ -1,11 +1,11 @@
-import React, { useState ,useEffect } from "react";
-import SingleFriend from "./SingleFriend";
+import React, { useState, useEffect } from "react";
+import SingleUser from "./SingleUser";
 import "../../App.css";
 import { useSelector } from "react-redux";
 import dbService from "../../supabase/database";
 
 const Friends = () => {
-  const [friends, setFriends] = useState([]);
+  const [friends, setFriends] = useState();
   // const id = useSelector((state) => state.auth.userId);
 
   // useEffect(() => {
@@ -17,21 +17,22 @@ const Friends = () => {
   //   getFriends(id);
   // }, [id]);
 
-  const ownId = useSelector((state) => state.auth.userId)
+  const ownId = useSelector((state) => state.auth.userId);
 
-  useEffect(()=>{
-    console.log(ownId)
-    dbService.getRecentSection(ownId)
-    .then((response)=>{
+  useEffect(() => {
+    console.log(ownId);
+    async function getData(){
+  await  dbService.getRecentSection(ownId).then((response) => {
       console.log(response.data[0].recentSection);
-      if(response.data[0]) setFriends(response.data[0].recentSection);
-      console.log(friends)
-    })
-  },[ownId])
-   
+      let data = response.data[0].recentSection
+      if (data) {
+        setFriends(data);
+      }
+    })}
+    getData();
+  }, [ownId]);
 
-
-  if (friends.length === 0) {
+  if (friends== null) {
     return (
       <div className="friend-list flex justify-center align-middle text-center">
         Click in search bar to search user
@@ -40,9 +41,9 @@ const Friends = () => {
   }
 
   return (
-    <div className="friend-list overflow-y-scroll flex flex-col gap-1 max-h-full ">
+    <div className="friend-list overflow-x-scroll flex flex-col gap-1 max-h-full ">
       {friends.map((friend) => (
-        <SingleFriend friend={friend} key={friend.id} />
+        <SingleUser friend={friend} key={friend.id} />
       ))}
     </div>
   );

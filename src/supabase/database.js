@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import conf from "../conf/config";
+// import { storage } from "@supabase/supabase-js";
 
 export class DbService {
   supabase;
@@ -30,11 +31,8 @@ export class DbService {
     else if (error) return null;
   }
 
-  async allFriends(id) {
-    const { data, error } = await this.supabase
-      .from("users")
-      .select()
-      .textSearch("id", `${id}`);
+  async allUser() {
+    const { data, error } = await this.supabase.from("users").select();
     if (data) return data;
     else if (error) return null;
   }
@@ -60,19 +58,60 @@ export class DbService {
     if (data) return data.data[0].friendsList;
   }
 
-  async addToRecent(ownId, friendId, data) {
+  async addToRecent(ownId, friendId, msg = "") {
+    // Fetching own resentSection Data
+    let { data } = await this.supabase
+      .from("messages")
+      .select("recentSection")
+      .eq("id", ownId);
+    let recentSectionData = data[0].recentSection;
+    recentSectionData = recentSectionData.filter((d) => d.id != friendId);
+
+    let friendData = await this.getUserData(friendId);
+    console.log(friendData);
+    let updateData = [
+      {
+        id: friendData[0].id,
+        userName: friendData[0].userName,
+        imageUrl: friendData[0].imageUrl,
+        msg,
+      },
+      ...recentSectionData,
+    ];
     // Updating the Own recent section in supabase
     await this.supabase
       .from("messages")
-      .update([{ recentSection: data }])
+      .update([{ recentSection: updateData }])
       .eq("id", ownId)
       .select();
+
     // Updating the friend recent section
-    await this.supabase
-      .from("messages")
-      .update([{ recentSection: data }])
-      .eq("id", friendId)
-      .select();
+    if (msg) {
+      let { data } = await this.supabase
+        .from("messages")
+        .select("recentSection")
+        .eq("id", friendId);
+      let recentSectionData = data[0].recentSection;
+      recentSectionData = recentSectionData.filter((d) => d.id != ownId);
+
+      let ownData = await this.getUserData(ownId);
+
+      updateData = [
+        {
+          id: ownId,
+          userName: ownData[0].userName,
+          imageUrl: ownData[0].imageUrl,
+          msg,
+        },
+        ...recentSectionData,
+      ];
+      
+      await this.supabase
+        .from("messages")
+        .update([{ recentSection: updateData }])
+        .eq("id", friendId)
+        .select();
+    }
   }
 
   async getRecentSection(id) {
@@ -84,16 +123,73 @@ export class DbService {
     else return null;
   }
 
-  async uploadImages(userId , file, bucketName) {
-    console.log(bucketName)
-    const { data, error } = await this.supabase.storage
-      .from("sentImages")
-      .upload( userId + "/", file);
-    if (data) {
-      return data;
-    } else {
-     console.log(error)
-    }
+  async uploadImages(id, file, bucketName, uid) {
+    const response = await this.supabase.storage
+      .from(bucketName)
+      .upload(id + "/" + uid, file);
+    console.log(response);
+    return response;
+  }
+
+  async updateMessage(ownId, friendId, msg, msgId, time) {
+    // Own database
+    let { data } = await this.supabase
+      .from("messages")
+      .select("messages")
+      .eq("id", ownId);
+    let messagesData = data[0].messages;
+
+    let updateData = [
+      {
+        msgId,
+        imageUrl: sentImageLink,
+        msg,
+        time,
+        received: false,
+      },
+      ...messagesData,
+    ];
+    await this.supabase
+      .from("messages")
+      .update([{ messages: updateData }])
+      .eq("id", ownId)
+      .select();
+
+    // Friend database
+    // retreiving friend messages column from supabase
+    let response = await this.supabase
+      .from("messages")
+      .select("messages")
+      .eq("id", friendId);
+    messagesData = response.data[0].messages;
+
+    // Updating the friend data
+    updateData = [
+      {
+        msgId,
+        imageUrl: sentImageLink,
+        msg,
+        time,
+        received: false,
+      },
+      ...messagesData,
+    ];
+    //  Updating friend message column in database
+    await this.supabase
+      .from("messages")
+      .update([{ message: updateData }])
+      .eq("id", friendId)
+      .select();
+  }
+
+  async updateData(tableName, keyValue, id) {
+    console.log(keyValue);
+    const response = await this.supabase
+      .from(tableName)
+      .update({ imageUrl: keyValue })
+      .eq("id", id)
+      .select();
+    console.log(response);
   }
 }
 

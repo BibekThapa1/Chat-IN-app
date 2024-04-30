@@ -14,12 +14,12 @@ const Lower = ({classname,...props}) => {
       <Search/>
       <Friends/> 
       <div>
-       <Link to={"/all-friends"}><button
+       <Link to={"/all-users"}><button
          className='bg-slate-400 text-xl w-full   px-2 rounded-xl align-bottom  bottom-0'
         //  onClick={}  
            
 
-         >All friends -</button>
+         >All Users -</button>
          </Link> 
       </div>
     </div>
