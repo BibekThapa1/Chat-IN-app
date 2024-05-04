@@ -21,7 +21,7 @@ const SignUp = () => {
 
   const create = async (data) => {
     const image = data.image[0];
-  
+  if(image){
     const id = await authService.signUp(data,image,"profileImages",uuidv4());
 
     if (id) {
@@ -31,6 +31,8 @@ const SignUp = () => {
     else{
       setError(true)
     }
+  }
+  else setError(true)
   };
 
   return (
@@ -84,7 +86,7 @@ const SignUp = () => {
             <Input
               id={id}
               className={`w-5/12 self-center outline-none hidden `}
-              type="file"
+              type="image"
               
               {...register("image", {
                 required: true,
