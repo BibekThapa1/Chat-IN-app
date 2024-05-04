@@ -55,7 +55,7 @@ const Search = () => {
         <div className="absolute bg-slate-200 p-1 h-fit max-h-96  flex-col gap-4  overflow-y-scroll  w-full">
           {users.map((user) => (
             <Link
-              to={`user/${user.id}`}
+              to={`/user/${user.id}`}
               key={user.id}
               className="searched-user p-1 rounded-xl flex align-middle justify-between bg-white cursor-pointer mb-2 hover:bg-slate-300"
               onClick={addFriend}

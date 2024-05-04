@@ -1,22 +1,71 @@
-.home{
-    height:  calc(((100vh - 2rem)));
-}
-.chat-area{
-    height:calc(100vh - 11em)
-}
-.friend-list{
-    height:calc((100vh - 17em));
+.home {
+    height: calc(((100vh - 2rem)));
 }
 
-.searched-user{
-    bottom:-34px;
+.searched-user {
+    bottom: -34px;
 }
-.all-user{
+
+.all-user {
     height: 100%;
-    width: 80vw; 
+    width: 80vw;
 }
 
 /* All friends component */
-.friend-li{
-min-width: 50vw;
+.friend-li {
+    width: auto;
+}
+
+/* Media queries */
+@media (max-width:1200px) {
+    #home {
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column !important;
+        justify-content: space-between;
+    }
+
+    #left-container {
+        width: 100vw;
+        margin: auto;
+        height: fit-content;
+    }
+
+    #friend-list {
+        max-width: fit-content;
+        display: flex;
+        flex-direction: row;
+    }
+
+    #friend-list .friend-text {
+        display: none;
+    }
+
+    #right-container {
+        padding: 0.35rem;
+        flex: 1;
+        /* min-height: 70vh; */
+    }
+
+    .chat-area {
+        height: 50vh;
+    }
+
+}
+
+@media (min-width:1200px) {
+    #right-container {
+        flex: 1;
+        /* w- */
+    }
+
+    .chat-area {
+        height: calc(100vh - 11em)
+    }
+
+    .friend-list {
+        height: calc((100vh - 17em));
+    }
+
 }

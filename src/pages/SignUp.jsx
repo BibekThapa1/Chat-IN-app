@@ -1,4 +1,4 @@
-import React, { useId } from "react";
+import React, { useId, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Input, Button } from "../components/index";
 import { Link, useNavigate } from "react-router-dom";
@@ -12,6 +12,8 @@ import { v4 as uuidv4 } from "uuid";
 
 const SignUp = () => {
   const { register, handleSubmit } = useForm();
+  const [error, setError] = useState(false)
+
 
   const id = useId();
   const dispatch = useDispatch();
@@ -25,6 +27,9 @@ const SignUp = () => {
     if (id) {
       dispatch(authLogin(id));
       navigate("/");
+    }
+    else{
+      setError(true)
     }
   };
 
@@ -78,18 +83,18 @@ const SignUp = () => {
             </label>
             <Input
               id={id}
-              className="w-5/12 self-center outline-none hidden"
+              className={`w-5/12 self-center outline-none hidden `}
               type="file"
+              
               {...register("image", {
                 required: true,
               })}
             />
-
-            <input id="add" type="file" className="hidden"></input>
             <Button type="submit" classname="w-fit self-center text-blue-50">
               Sign Up
             </Button>
           </form>
+          {error && <p className="text-red-500">Please enter valid details including image</p>}
           <p className="text-xl self-center mt-4">
             {" "}
             Already have an account,{" "}

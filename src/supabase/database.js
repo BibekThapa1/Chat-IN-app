@@ -8,7 +8,32 @@ export class DbService {
     this.supabase = createClient(conf.supabaseUrl, conf.supabaseKey);
   }
 
+  supabaseClient() {
+    return this.supabase;
+  }
+
+  async subscribeChannel(table,msgId) {
+    let messages;
+    this.supabase
+      .channel("schema-db-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: table,
+        },
+        (payload) => {
+          messages = payload;
+          console.log(messages)
+    }
+      )
+      .subscribe();
+    return messages;
+  }
+
   async getUserData(id) {
+    console.log(this.supabase);
     const { data, error } = await this.supabase
       .from("users")
       .select()
@@ -58,6 +83,15 @@ export class DbService {
     if (data) return data.data[0].friendsList;
   }
 
+  async getSpecificData(userId, tableName, columnName) {
+    let { data } = await this.supabase
+      .from(`${tableName}`)
+      .select(`${columnName}`)
+      .eq("id", userId);
+    if (data) return data;
+    else [];
+  }
+
   async addToRecent(ownId, friendId, msg = "") {
     // Fetching own resentSection Data
     let { data } = await this.supabase
@@ -105,7 +139,7 @@ export class DbService {
         },
         ...recentSectionData,
       ];
-      
+
       await this.supabase
         .from("messages")
         .update([{ recentSection: updateData }])
@@ -131,15 +165,17 @@ export class DbService {
     return response;
   }
 
-  async updateMessage(ownId, friendId, msg, msgId, time) {
+  async updateMessage(ownId, friendId, msg, msgId, time, sentImageLink) {
     // Own database
     let { data } = await this.supabase
       .from("messages")
       .select("messages")
       .eq("id", ownId);
+    console.log(data);
     let messagesData = data[0].messages;
-
+    console.log(messagesData);
     let updateData = [
+      ...messagesData,
       {
         msgId,
         imageUrl: sentImageLink,
@@ -147,7 +183,6 @@ export class DbService {
         time,
         received: false,
       },
-      ...messagesData,
     ];
     await this.supabase
       .from("messages")
@@ -162,24 +197,28 @@ export class DbService {
       .select("messages")
       .eq("id", friendId);
     messagesData = response.data[0].messages;
+    console.log(response);
+    console.log(response.data[0].messages);
 
     // Updating the friend data
     updateData = [
+      ...messagesData,
       {
         msgId,
         imageUrl: sentImageLink,
         msg,
         time,
-        received: false,
+        received: true,
       },
-      ...messagesData,
     ];
     //  Updating friend message column in database
     await this.supabase
       .from("messages")
-      .update([{ message: updateData }])
+      .update([{ messages: updateData }])
       .eq("id", friendId)
       .select();
+
+    await this.addToRecent(ownId, friendId, msg);
   }
 
   async updateData(tableName, keyValue, id) {

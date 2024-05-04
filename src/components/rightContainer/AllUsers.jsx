@@ -12,7 +12,10 @@ const AllUsers = () => {
   useEffect(() => {
     async function getAllUsers() {
       await dbService.allUser().then((lists) => {
-        if (lists) setFriends(lists);
+        if (lists) {
+          lists = lists.filter((list)=> list.id != ownId)
+          setFriends(lists);
+        }
         console.log(friends)
       });
     }
@@ -29,7 +32,7 @@ const AllUsers = () => {
   if (friends.length === 0) {
     return (
       <h4 className="p-4 text-xl">
-        No friends. Click the search bar and add friends
+        No Users Available currently. 
       </h4>
     );
   }
@@ -43,7 +46,7 @@ const AllUsers = () => {
             <Link
               id={friend.otherData.identities[0].id}
               to={`/user/${friend.otherData.identities[0].id}`}
-              className="friend-li flex justify-between rounded-xl w-full align-middle p-2 bg-slate-300 hover:bg-slate-200 cursor-pointer"
+              className="friend-li  justify-between rounded-xl block  align-middle p-2 bg-slate-300 hover:bg-slate-200 cursor-pointer"
               onClick={addToFriend}
             >
               <img
@@ -51,7 +54,7 @@ const AllUsers = () => {
                 className="h-10 object-fill rounded-full "
                 alt=""
               />
-              <p className="text-xl align-middle pr-8 self-center">
+              <p className="text-xl align-middle pr-8 self-center pl-4">
                 {friend.userName}{" "}
               </p>
               {/* <button className="border-2 rounded-xl cursor-pointer  p-1 hover:bg-slate-100" id={friend.id} >

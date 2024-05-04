@@ -6,6 +6,7 @@ import dbService from "../../supabase/database";
 
 const Friends = () => {
   const [friends, setFriends] = useState();
+
   // const id = useSelector((state) => state.auth.userId);
 
   // useEffect(() => {
@@ -18,21 +19,25 @@ const Friends = () => {
   // }, [id]);
 
   const ownId = useSelector((state) => state.auth.userId);
+  const clicked = useSelector((state) => state.auth.clicked);
 
   useEffect(() => {
     console.log(ownId);
-    async function getData(){
-  await  dbService.getRecentSection(ownId).then((response) => {
-      console.log(response.data[0].recentSection);
-      let data = response.data[0].recentSection
-      if (data) {
-        setFriends(data);
-      }
-    })}
+    async function getData() {
+      await dbService.getRecentSection(ownId).then((response) => {
+        console.log(response.data[0].recentSection);
+        let data = response.data[0].recentSection;
+        if (data) {
+          setFriends(data);
+        }
+      });
+    }
     getData();
-  }, [ownId]);
+  }, [ownId,clicked]);
 
-  if (friends== null) {
+
+
+  if (friends == null) {
     return (
       <div className="friend-list flex justify-center align-middle text-center">
         Click in search bar to search user
@@ -41,9 +46,9 @@ const Friends = () => {
   }
 
   return (
-    <div className="friend-list overflow-x-scroll flex flex-col gap-1 max-h-full ">
+    <div id="friend-list" className=" flex flex-col overflow-x-scroll gap-1 max-h-full ">
       {friends.map((friend) => (
-        <SingleUser friend={friend} key={friend.id} />
+        <SingleUser friend={friend} key={friend.id}  className="friend"/>
       ))}
     </div>
   );

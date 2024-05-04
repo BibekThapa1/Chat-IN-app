@@ -22,7 +22,7 @@ console.log("entered the loading",loading)
   return loading ? (
     <h1 className="flex justify-center align-middle w-screen h-screen text-2xl">Loading...</h1>
   ) : (
-    <div className="home flex flex-wrap m-4   rounded-xl   bg-green-200 p-2 overflow-hidden">
+    <div id="home" className="home flex flex-wrap m-4   rounded-xl   bg-green-200 p-2">
       <LeftContainer />
       <RightContainer />
     </div>

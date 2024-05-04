@@ -4,6 +4,7 @@ const initialState = {
   userId: null,
   user: false,
   data: null,
+  clicked:0,
 };
 
 export const authSlice = createSlice({
@@ -24,10 +25,13 @@ export const authSlice = createSlice({
       state.user = false;
       state.userData = null;
     },
+    clicked:(state)=>{
+      state.clicked++;
+    }
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { login, logout ,userData } = authSlice.actions;
+export const { login, logout ,userData,clicked } = authSlice.actions;
 
 export default authSlice.reducer;

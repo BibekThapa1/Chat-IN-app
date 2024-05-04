@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import dbService from "../../supabase/database";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { useParams } from "react-router-dom";
+import { clicked as inputFieldClicked } from "../../store/authSlice";
 
 const InputField = () => {
   const [msg, setMsg] = useState("");
   const [image, setImage] = useState(null);
-  const userId = useSelector((state) => state.auth.userId);
+  const [loading, setLoading] = useState(false);
+
+  const ownId = useSelector((state) => state.auth.userId);
+  const dispatch = useDispatch();
   const { slug } = useParams();
-  let imageUrl = "";
+  let sentImageUrl = "";
 
   function handleImageChange(e) {
     let selectedFile = e.target.files[0];
@@ -20,17 +24,34 @@ const InputField = () => {
 
   async function sendData(e) {
     e.preventDefault();
+    let message = msg;
+    setMsg("");
+    setLoading(true);
+    if(image || msg){
     if (image) {
       console.log(image);
       await dbService
-        .uploadImages(userId, image, "sentImages", uuidv4())
+        .uploadImages(ownId, image, "sentImages", uuidv4())
         .then((data) => {
-         
-          imageUrl = `https://ourvhgbvgfgyitosfspy.supabase.co/storage/v1/object/public/${data.data.fullPath}`
+          sentImageUrl = `https://ourvhgbvgfgyitosfspy.supabase.co/storage/v1/object/public/${data.data.fullPath}`;
         });
     }
-   let msgId = if
-    await dbService.updateMessage(ownId, slug, msg, msgId, time);
+    let msgId = ownId > slug ? ownId + slug : slug + ownId;
+    let time = new Date();
+    await dbService.updateMessage(
+      ownId,
+      slug,
+      message,
+      msgId,
+      time,
+      sentImageUrl
+    );
+  }
+    setImage(null);
+    sentImageUrl = "";
+    message = "";
+    setLoading(false);
+    dispatch(inputFieldClicked());
   }
 
   return (
@@ -65,6 +86,7 @@ const InputField = () => {
             name="avatar"
             accept="image/png, image/jpeg"
             className="hidden"
+            disabled={loading}
             onChange={(e) => handleImageChange(e)}
           />
         </div>
@@ -78,9 +100,10 @@ const InputField = () => {
       />
       <button
         type="submit"
-        className="bg-blue-200 px-3 text-xl rounded-md cursor-pointer flex-none"
+        className="bg-blue-200  w-32 px-3 text-xl rounded-md cursor-pointer flex-none"
+        disabled={loading}
       >
-        send
+        {loading ? "sending.." : "send"}
       </button>
     </form>
   );

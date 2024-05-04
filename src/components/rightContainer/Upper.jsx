@@ -36,13 +36,8 @@ const Upper = () => {
       <div className="flex justify-between align-middle gap-2 flex-1 px-3">
         <div className="w-full  flex justify-between align-middle gap-2">
         <p className=" px-3 text-xl self-center">{user[0].userName}</p>
-        <div className="flex justify-between align-middle px-2 gap-2">
-            <button className="border-none bg-black rounded-xl p-1 cursor-pointer text-white">audio</button>
-            <button className="border-none bg-black rounded-xl p-1 cursor-pointer text-white">video</button>
-        </div>
         </div>
         <div>
-            <button className="bg-black cursor-pointer p-2 rounded-xl text-white"> option</button>
         </div>
       </div>
     </div>
