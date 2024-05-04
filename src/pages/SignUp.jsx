@@ -86,8 +86,8 @@ const SignUp = () => {
             <Input
               id={id}
               className={`w-5/12 self-center outline-none hidden `}
-              type="image"
-              
+              type="file"
+              accept="image/*"
               {...register("image", {
                 required: true,
               })}
